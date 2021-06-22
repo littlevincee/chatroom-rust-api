@@ -1,0 +1,4 @@
+insert into users(username, hash, first_name, last_name, role) values ('john_doe', '$argon2id$v=19$m=4096,t=192,p=4$NEWWvndJryPwSgvsuF23RjCDcLclz1uZLN3bSqy1SF0$kFfrW7jHZfGU0rxSscBIjAbHND45bViJYdXlrCzu7T4', 'John', 'Doe', 'ADMIN');
+insert into users(username, hash, first_name, last_name, role) values ('vinson', '$argon2id$v=19$m=4096,t=192,p=4$NEWWvndJryPwSgvsuF23RCDcLclz1uZLN3bSqy1SF0$kFfrW7jHZfGU0rxSscBIjAbHND45bViJYdXlrCzu7T4', 'vinson', 'wong', 'ADMIN');
+insert into users(username, hash, first_name, last_name, role) values ('vinson1', '$argon2id$v=19$m=4096,t=192,p=4$NEWWvndJryPwSgvsuF23RCDcLclz1uZLN3bSqy1SF0$kFfrW7jHZfGU0rxSscBIjAbHND45bViJYdXlrCzu7T4', 'vinson1', 'wong1', 'ADMIN');
+insert into users(username, hash, first_name, last_name, role) values ('vinson2', '$argon2id$v=19$m=4096,t=192,p=4$NEWWvndJryPwSgvsuF23RCDcLclz1uZLN3bSqy1SF0$kFfrW7jHZfGU0rxSscBIjAbHND45bViJYdXlrCzu7T4', 'vinson2', 'wong2', 'ADMIN');

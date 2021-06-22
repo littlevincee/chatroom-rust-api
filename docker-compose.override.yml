@@ -1,0 +1,13 @@
+# development configuration
+version: '3.8'
+services:
+
+  # Auth service
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+
+  # Apollo server
+  apollo-server:
+    build: apollo-server
