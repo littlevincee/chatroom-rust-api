@@ -1,2 +1,0 @@
-insert into users(username, hash, first_name, last_name, role) values ('vinson3', '$argon2id$v=19$m=4096,t=192,p=4$NEWWvndJryPwSgvsuF23RCDcLclz1uZLN3bSqy1SF0$kFfrW7jHZfGU0rxSscBIjAbHND45bViJYdXlrCzu7T4', 'vinson3', 'wong3', 'ADMIN');
-insert into users(username, hash, first_name, last_name, role) values ('vinson4', '$argon2id$v=19$m=4096,t=192,p=4$NEWWvndJryPwSgvsuF23RCDcLclz1uZLN3bSqy1SF0$kFfrW7jHZfGU0rxSscBIjAbHND45bViJYdXlrCzu7T4', 'vinson4', 'wong4', 'ADMIN');

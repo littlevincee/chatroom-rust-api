@@ -21,3 +21,6 @@ docker build -t name .
 
 # docker compose up
 docker-compose -f docker-compose.override.yml up
+
+# wait-for-it.sh
+# change it to LF endline
