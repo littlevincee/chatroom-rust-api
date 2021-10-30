@@ -1,4 +1,4 @@
 pub mod connection;
-pub(crate) mod model;
+pub(crate) mod user;
 pub(crate) mod repository;
 mod schema;

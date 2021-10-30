@@ -1,14 +1,16 @@
+use chrono::{DateTime, Utc};
+// use diesel::sql_types::Timestamp;
+// use async_graphql::guard::Guard;
 use std::str::FromStr;
-
-use async_graphql::guard::Guard;
 use async_graphql::*;
+use async_graphql_actix_web::*;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 
 use common_utils::Role as AuthRole;
 
 use crate::get_conn_from_ctx;
-use crate::persistence::model::{NewUserEntity, UserEntity};
+use crate::persistence::user::{NewUserEntity, UserEntity};
 use crate::persistence::repository;
 use crate::utils::{hash_password, verify_password};
 
@@ -31,14 +33,15 @@ pub struct Mutation;
 
 #[Object]
 impl Mutation {
-    #[graphql(guard(RoleGuard(role = "AuthRole::Admin")))]
     async fn create_user(&self, ctx: &Context<'_>, user: UserInput) -> User {
         let new_user = NewUserEntity {
             username: user.username,
-            hash: hash_password(user.password.as_str()).expect("Can't get hash for password"),
             first_name: user.first_name,
             last_name: user.last_name,
-            role: user.role.to_string(),
+            is_active: user.is_active,
+            is_super: user.is_super,
+            //created_at: user.created_at,
+            //updated_at: user.updated_at
         };
 
         let created_user_entity =
@@ -46,52 +49,29 @@ impl Mutation {
 
         User::from(&created_user_entity)
     }
-
-    async fn sign_in(&self, ctx: &Context<'_>, input: SignInInput) -> Result<String, Error> {
-        let maybe_user = repository::get_user(&input.username, &get_conn_from_ctx(ctx)).ok();
-
-        if let Some(user) = maybe_user {
-            if let Ok(matching) = verify_password(&user.hash, &input.password) {
-                if matching {
-                    let role = AuthRole::from_str(user.role.as_str())
-                        .expect("Can't convert &str to AuthRole");
-                    return Ok(common_utils::create_token(user.username, role));
-                }
-            }
-        }
-
-        Err(Error::new("Can't authenticate a user"))
-    }
 }
+
 
 #[derive(SimpleObject)]
 struct User {
     username: String,
     first_name: String,
     last_name: String,
-    role: Role,
+    is_active: bool,
+    is_super: bool,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
 }
 
 #[derive(InputObject)]
 struct UserInput {
     username: String,
-    password: String,
     first_name: String,
     last_name: String,
-    role: Role,
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Serialize, Deserialize, Enum, Display, EnumString)]
-#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
-pub(crate) enum Role {
-    Admin,
-    User,
-}
-
-#[derive(InputObject)]
-struct SignInInput {
-    username: String,
-    password: String,
+    is_active: bool,
+    is_super: bool,
+    // created_at: DateTime<Utc>,
+    // updated_at: DateTime<Utc>
 }
 
 impl From<&UserEntity> for User {
@@ -100,22 +80,10 @@ impl From<&UserEntity> for User {
             username: entity.username.clone(),
             first_name: entity.first_name.clone(),
             last_name: entity.last_name.clone(),
-            role: Role::from_str(entity.role.as_str()).expect("Can't convert &str to Role"),
-        }
-    }
-}
-
-struct RoleGuard {
-    role: AuthRole,
-}
-
-#[async_trait::async_trait]
-impl Guard for RoleGuard {
-    async fn check(&self, ctx: &Context<'_>) -> Result<()> {
-        if ctx.data_opt::<AuthRole>() == Some(&self.role) {
-            Ok(())
-        } else {
-            Err("Forbidden".into())
+            is_active: entity.is_active.clone(),
+            is_super: entity.is_super.clone(),
+            created_at: entity.created_at.clone(),
+            updated_at: entity.updated_at.clone(),
         }
     }
 }
